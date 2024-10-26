@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sign Up - S-Leak</title>
+	<link rel="stylesheet" href="signup_css.css">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<header>
+		<div class="header-content">
+			<a href="search.html">
+				<img src='S-Leak Cover-NoBG.png' alt="S-Leak Logo" class="logo">
+			</a>
+			<nav>
+				<a href="search.html">Home</a>
+				<a href="https://decryptingplus.com/s-leak/">About</a>
+				<a href="#">Contact</a>
+			</nav>
+		</div>
+	</header>
+
+	<div class="container">
+		<div class="form-container">
+			<img src="S-Leak Cover-NoBG.png" class="form-logo" alt="S-Leak Logo">
+			<h2>Create Your Account</h2>
+			<p class="subheading">Join now for just $1 to secure your data.</p>
+			<form id="signup-form">
+				<label for="name">Full Name</label>
+				<input type="text" id="name" name="name" class='form-input' required>
+				
+				<label for="email">Email Address</label>
+				<input type="email" id="email" name="email" class='form-input' required>
+
+				<div class="price-section">
+					<h3>Price: <span class="price">$1</span></h3>
+				</div>
+
+				<!-- Pay Now Button -->
+				<div id="payment-status"></div>
+				
+				<button type="submit" class="signup-button">Pay Now</button>
+				<p>Already have an account? <a href="login.html">Log in here</a>.</p>
+			</form>
+		</div>
+	</div>
+
+	<footer>
+		<div class="footer-content">
+			<div class="copyright">
+				&copy; 2024 Decrypting
+			</div>
+			<div class="footer-links">
+				<a href="privacy.html" target="_blank">Privacy Policy</a> |
+				<a href="terms.html" target="_blank">Terms and Conditions</a>
+			</div>
+			<div class="social-media">
+				<a href="https://x.com/decrypting_sec/" target="_blank" rel="noopener noreferrer">
+					<img src="x-icon.png" alt="X">
+				</a>
+				<a href="https://www.instagram.com/decryptingplus/" target="_blank" rel="noopener noreferrer">
+					<img src="instagram-icon.png" alt="Instagram">
+				</a>
+				<a href="https://www.linkedin.com/company/decrypting/" target="_blank" rel="noopener noreferrer">
+					<img src="linkedin-icon.png" alt="LinkedIn">
+				</a>
+			</div>
+		</div>
+	</footer>
+	<script>
+		function signUp(event) {
+			event.preventDefault();
+
+			const name = document.getElementById('name').value;
+			const email = document.getElementById('email').value;
+			const responseDiv = document.getElementById('payment-status');
+
+			responseDiv.innerHTML = '';
+
+			fetch('http://127.0.0.1:5000/signup', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ name, email })
+			})
+			.then(response => response.json())
+			.then(data => {
+				if (data.message) {
+					responseDiv.textContent = data.message;
+					responseDiv.style.color = 'green';
+					window.location.href = 'at_capacity.html';
+				} else {
+					responseDiv.textContent = data.error || 'Signup failed. Please try again.';
+					responseDiv.style.color = 'red';
+				}
+			})
+			.catch(error => {
+				responseDiv.textContent = 'Error: Could not process signup. Please try again later.';
+				responseDiv.style.color = 'red';
+				console.error('Error:', error);
+			});
+		}
+
+		// Attach the signUp function to the form's submit event
+		document.getElementById('signup-form').addEventListener('submit', signUp);
+	</script>
+</body>
+</html>

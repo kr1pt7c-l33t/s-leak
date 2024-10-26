@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+	<title>S-Leak by Decrypting</title>
+	<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<header>
+		<div class="header-content">
+			<a href="search.html">
+				<img src='S-Leak Cover-NoBG.png' alt="S-Leak Logo">
+			</a>
+			<!-- <h2>{S-Leak}</h2> -->
+			<nav>
+				<a href="search.html">Home</a>
+				<a href="#">About</a>
+				<a href="#">Contact</a>
+				<a href="signup.html" id='signup-button'>Sign Up</a>
+			</nav>
+		</div>
+	</header>
+
+	<div class='container'>
+		<img src="S-Leak Cover-NoBG.png">
+		<!-- <h1>{S-Leak}</h1> -->
+		<h3>Check if your data has been leaked</h3>
+
+		<input type="text" id="keywords" name="keywords" class='search-input' placeholder="Keywords...">
+		<button onclick="searchLeaks()">Search</button>
+		<div id="login-signup-message" style="display: none;">
+			<p>You need to <a href="signup.html">sign up</a> to continue using this feature.</p>
+		</div>
+
+		<p>*If searching using your first or last name, please remember that multiple people can have the same name. We suggest using unique identifiers (e.g. email addresses) as follow-ups for the best results.</p>
+
+		<div id="results-neg"></div>
+		<div id="results-aff"></div>
+		<div id="error" class="error"></div>
+	</div>
+
+	<footer>
+		<div class="footer-content">
+			<div class="copyright">
+				&copy; 2024 Decrypting
+			</div>
+			<div class="footer-links">
+				<a href="privacy.html" target="_blank">Privacy Policy</a> |
+				<a href="terms.html" target="_blank">Terms and Conditions</a>
+			</div>
+			<div class="social-media">
+				<a href="https://x.com/decrypting_sec/" target="_blank" rel="noopener noreferrer">
+					<img src="x-icon.png" alt="X">
+				</a>
+				<a href="https://www.instagram.com/decryptingplus/" target="_blank" rel="noopener noreferrer">
+					<img src="instagram-icon.png" alt="Instagram">
+				</a>
+				<a href="https://www.linkedin.com/company/decrypting/" target="_blank" rel="noopener noreferrer">
+					<img src="linkedin-icon.png" alt="LinkedIn">
+				</a>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		function searchLeaks() {
+			if (localStorage.getItem("hasUsedFeature") == 'false'){
+				alert('You need to log in or sign up to continue using this feature.');
+				window.location.href = 'login.html';
+				return;
+			}
+			const keyword = document.getElementById('keywords').value;
+			const resultsDivAff = document.getElementById('results-aff');
+			const resultsDivNeg = document.getElementById('results-neg')
+			const errorDiv = document.getElementById('error');
+
+			resultsDivAff.innerHTML = '';
+			resultsDivNeg.innerHTML = '';
+			errorDiv.innerHTML = '';
+
+			if (!keyword) {
+				errorDiv.textContent = 'Please enter a keyword to search.';
+				return;
+			}
+
+			fetch(`http://127.0.0.1:5000/search?keywords=${encodeURIComponent(keyword)}`)
+				.then(response => response.json())
+				.then(data => {
+					localStorage.setItem('hasUsedFeature', 'true');
+					if (!data.exists) {
+						resultsDivNeg.innerHTML = "<h1 class='data-found'>No results found.</h1><h3>We did not find your data in our leak database</h3>";
+					} else {
+						let results = "";
+						results += `<h1 class='data-found'>DATA FOUND!</h1><p>We found data matching your search in our database.</p>`
+						results += `<a href="signup.html" id='signup-button'>Sign Up for the Full Report!</a>`
+						results += `<hr>`
+						results += `<p>Number of matching records: ${data.count}</p>`
+						results += `<p>Leaks we found your data in: ${data.leaks}</p>`
+						results += `<hr>`
+						results += `<p>The following data is exposed: </p>`
+						results += `<div class='cols-container'>`
+						results += `<div class='cols'>*****</div><div class='cols'>*****</div><div class='cols'>*****</div><div class='cols'>*****</div><div class='cols'>*****</div>`;
+						results += `</div>`
+						resultsDivAff.innerHTML = results;
+					}
+				})
+				.catch(error => {
+					errorDiv.textContent = 'Error: Could not fetch data. Please try again later.';
+					console.error('Error:', error);
+				});
+		}
+
+		function logout() {
+			localStorage.removeItem('loggedIn');
+			window.location.href = 'login.html';
+		}
+
+		window.onload = function() {
+			if (localStorage.getItem("loggedIn") == 'true') {
+				document.getElementById("login-button").style.display = "none";
+				document.getElementById("signup-button").style.display = "none";
+				document.getElementById("logout-button").style.display = "flex";
+			} else {
+				document.getElementById("login-button").style.display = "flex";
+				document.getElementById("signup-button").style.display = "flex";
+				document.getElementById("logout-button").style.display = "none";
+			}
+		}
+	</script>
+</body>
+</html>
