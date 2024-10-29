@@ -30,9 +30,6 @@
 
 		<input type="text" id="keywords" name="keywords" class='search-input' placeholder="Keywords...">
 		<button onclick="searchLeaks()">Search</button>
-		<div id="login-signup-message" style="display: none;">
-			<p>You need to <a href="signup.html">sign up</a> to continue using this feature.</p>
-		</div>
 
 		<p>*If searching using your first or last name, please remember that multiple people can have the same name. We suggest using unique identifiers (e.g. email addresses) as follow-ups for the best results.</p>
 
@@ -66,9 +63,9 @@
 
 	<script>
 		function searchLeaks() {
-			if (localStorage.getItem("hasUsedFeature") == 'false'){
+			if (localStorage.getItem("hasUsedFeature") == 'true'){
 				alert('You need to log in or sign up to continue using this feature.');
-				window.location.href = 'login.html';
+				window.location.href = 'signup.html';
 				return;
 			}
 			const keyword = document.getElementById('keywords').value;
