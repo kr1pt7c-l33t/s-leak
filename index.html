@@ -82,7 +82,7 @@
 				return;
 			}
 
-			fetch(`http://127.0.0.1:5000/search?keywords=${encodeURIComponent(keyword)}`)
+			fetch(`http://13.60.12.1/search?keywords=${encodeURIComponent(keyword)}`)
 				.then(response => response.json())
 				.then(data => {
 					localStorage.setItem('hasUsedFeature', 'true');
