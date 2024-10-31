@@ -82,7 +82,7 @@
 				return;
 			}
 
-			fetch(`http://13.60.12.1/search?keywords=${encodeURIComponent(keyword)}`)
+			fetch(`https://slapi.decryptingplus.com/search?keywords=${encodeURIComponent(keyword)}`)
 				.then(response => response.json())
 				.then(data => {
 					localStorage.setItem('hasUsedFeature', 'true');
@@ -107,24 +107,7 @@
 					errorDiv.textContent = 'Error: Could not fetch data. Please try again later.';
 					console.error('Error:', error);
 				});
-		}
-
-		function logout() {
-			localStorage.removeItem('loggedIn');
-			window.location.href = 'login.html';
-		}
-
-		window.onload = function() {
-			if (localStorage.getItem("loggedIn") == 'true') {
-				document.getElementById("login-button").style.display = "none";
-				document.getElementById("signup-button").style.display = "none";
-				document.getElementById("logout-button").style.display = "flex";
-			} else {
-				document.getElementById("login-button").style.display = "flex";
-				document.getElementById("signup-button").style.display = "flex";
-				document.getElementById("logout-button").style.display = "none";
 			}
-		}
 	</script>
 </body>
 </html>
